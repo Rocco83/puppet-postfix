@@ -36,7 +36,8 @@ class postfix (
   $sasl_user                = undef,
   $sasl_pass                = undef,
 ) inherits ::postfix::params {
-  validate_re($package_ensure, '^(absent|latest|present|purged)$')
+  #validate_re($package_ensure, '^(absent|latest|present|purged)$')
+  Pattern[/^(absent|latest|present|purged)$/] $package_ensure    = 'present',
   validate_string($package_name)
   if $package_list { validate_array($package_list) }
 
@@ -59,7 +60,8 @@ class postfix (
   validate_hash($config_file_hash)
   validate_hash($config_file_options_hash)
 
-  validate_re($service_ensure, '^(running|stopped)$')
+  #validate_re($service_ensure, '^(running|stopped)$')
+  Pattern[/^(running|stopped)$/]               $service_ensure    = 'running',
   validate_string($service_name)
   validate_bool($service_enable)
 
@@ -86,8 +88,11 @@ class postfix (
     $_service_enable    = $service_enable
   }
 
-  validate_re($config_dir_ensure, '^(absent|directory)$')
-  validate_re($config_file_ensure, '^(absent|present)$')
+  #validate_re($config_dir_ensure, '^(absent|directory)$')
+  Pattern[/^(absent|directory)$/]              $config_dir_ensure = 'directory',
+  #validate_re($config_file_ensure, '^(absent|present)$')
+  Pattern[/^(absent|present)$/]                $config_file_ensure = 'present',
+
 
   anchor { 'postfix::begin': } ->
   class { '::postfix::install': } ->
